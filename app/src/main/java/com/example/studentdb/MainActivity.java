@@ -28,11 +28,6 @@ public class MainActivity extends AppCompatActivity implements DialogFragment.Di
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textViewSurname = (TextView) findViewById(R.id.textView_surname);
-        textViewFirstName = (TextView) findViewById(R.id.textView_firstName);
-        textViewID = (TextView) findViewById(R.id.textView_ID);
-        textViewGPA = (TextView) findViewById(R.id.textView_GPA);
-
         vibrate = (Vibrator) getSystemService(VIBRATOR_SERVICE); // vibrate service
         insert_profile = (FloatingActionButton) findViewById(R.id.insert_profile_button); // insert profile button
 

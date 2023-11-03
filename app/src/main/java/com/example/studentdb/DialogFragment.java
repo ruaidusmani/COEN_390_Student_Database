@@ -61,10 +61,14 @@ public class DialogFragment extends AppCompatDialogFragment  {
                     int ID = Integer.parseInt(editTextID.getText().toString());
                     float GPA = Float.parseFloat(editTextGPA.getText().toString());
 
+                    DBHelper dbHelper = new DBHelper(getActivity());
+                    dbHelper.addStudent(new Student(surname, firstName, ID, GPA));
+
+                    //((MainActivity)getActivity()).loadTextView();
 
                     //pass the string to the main activity
-                    DialogListener listener = (DialogListener) getActivity();
-                    listener.applyTexts(surname, firstName, ID, GPA);
+//                    DialogListener listener = (DialogListener) getActivity();
+//                    listener.applyTexts(surname, firstName, ID, GPA);
 
                 }
             }
