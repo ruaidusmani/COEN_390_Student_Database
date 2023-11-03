@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,10 +33,21 @@ public class MainActivity extends AppCompatActivity {
         //Toolbar items
         activity_main_menu.showOverflowMenu();
 
-//        insert_profile.setOnClickListener();
+        //Floating action button
+        insert_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vibrate.vibrate(50);
+                OpenDialog();
+            }
+        });
 
     }
 
+    public void OpenDialog(){
+        DialogFragment dialogFragment = new DialogFragment();
+        dialogFragment.show(getSupportFragmentManager(), "Dialog Fragment");
+    }
 
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.activity_main_menu, menu); // to show the menu items
@@ -50,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
             vibrate.vibrate(50);
             return true;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
