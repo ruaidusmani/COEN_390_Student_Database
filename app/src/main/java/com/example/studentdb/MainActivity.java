@@ -8,19 +8,32 @@ import android.os.Vibrator;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogFragment.DialogListener{
 
     Vibrator vibrate;
+
+    TextView textViewSurname;
+    TextView textViewFirstName;
+    TextView textViewID;
+    TextView textViewGPA;
+
     FloatingActionButton insert_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textViewSurname = (TextView) findViewById(R.id.textView_surname);
+        textViewFirstName = (TextView) findViewById(R.id.textView_firstName);
+        textViewID = (TextView) findViewById(R.id.textView_ID);
+        textViewGPA = (TextView) findViewById(R.id.textView_GPA);
+
 
         vibrate = (Vibrator) getSystemService(VIBRATOR_SERVICE); // vibrate service
         insert_profile = (FloatingActionButton) findViewById(R.id.insert_profile_button); // insert profile button
@@ -65,4 +78,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void applyTexts(String surname, String firstName, String ID, String GPA) {
+        textViewSurname.setText(surname);
+        textViewFirstName.setText(firstName);
+        textViewID.setText(ID);
+        textViewGPA.setText(GPA);
+
+    }
 }
