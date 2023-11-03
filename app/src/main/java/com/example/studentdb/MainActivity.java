@@ -16,7 +16,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity implements DialogFragment.DialogListener{
 
     Vibrator vibrate;
-
     TextView textViewSurname;
     TextView textViewFirstName;
     TextView textViewID;
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements DialogFragment.Di
         textViewFirstName = (TextView) findViewById(R.id.textView_firstName);
         textViewID = (TextView) findViewById(R.id.textView_ID);
         textViewGPA = (TextView) findViewById(R.id.textView_GPA);
-
 
         vibrate = (Vibrator) getSystemService(VIBRATOR_SERVICE); // vibrate service
         insert_profile = (FloatingActionButton) findViewById(R.id.insert_profile_button); // insert profile button
@@ -54,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements DialogFragment.Di
                 OpenDialog();
             }
         });
-
     }
 
     public void OpenDialog(){
@@ -79,11 +76,10 @@ public class MainActivity extends AppCompatActivity implements DialogFragment.Di
     }
 
     @Override
-    public void applyTexts(String surname, String firstName, String ID, String GPA) {
+    public void applyTexts(String surname, String firstName, int ID, float GPA) {
         textViewSurname.setText(surname);
         textViewFirstName.setText(firstName);
-        textViewID.setText(ID);
-        textViewGPA.setText(GPA);
-
+        textViewID.setText(String.valueOf(ID));
+        textViewGPA.setText(Float.toString(GPA));
     }
 }
