@@ -7,6 +7,12 @@ public class Student {
     private int ID;
     private float GPA;
 
+    Student(){
+        surname = "";
+        firstName = "";
+        ID = 0;
+        GPA = 0;
+    }
     Student(String surname, String firstName, int ID, float GPA){
         this.surname = surname;
         this.firstName = firstName;

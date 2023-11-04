@@ -1,12 +1,17 @@
 package com.example.studentdb;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -45,7 +50,6 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(Config.COLUMN_ID,Student.getID());
         cv.put(Config.COLUMN_GPA,Student.getGPA());
 
-//        db.insert(Config.TABLE_NAME, null, cv);
         long result = db.insert(Config.TABLE_NAME, null, cv);
 
         if (result == -1){
@@ -54,7 +58,48 @@ public class DBHelper extends SQLiteOpenHelper {
         else{
 //            Toast.makeText(context, "Student added successfully", Toast.LENGTH_SHORT).show();
         }
+    }
 
 
+    Cursor readAllData(){
+        String query = "SELECT * FROM " + Config.TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null){
+            cursor = db.rawQuery(query, null);
+        }
+        return cursor;
+    }
+
+
+
+    public List<Student> getAllStudents(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        List<Student> students = new ArrayList<>();
+
+        try{
+            cursor = db.query(Config.TABLE_NAME, null, null, null, null, null, null);
+            if (cursor != null){
+                if (cursor.moveToFirst()){
+                    do{
+                        @SuppressLint("Range") String surname = cursor.getString(cursor.getColumnIndex(Config.COLUMN_SURNAME));
+                        @SuppressLint("Range") String firstName = cursor.getString(cursor.getColumnIndex(Config.COLUMN_FIRSTNAME));
+                        @SuppressLint("Range") int ID = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_ID));
+                        @SuppressLint("Range") float GPA = cursor.getFloat(cursor.getColumnIndex(Config.COLUMN_GPA));
+
+                        Student student = new Student(surname, firstName, ID, GPA);
+                        students.add(student);
+                    }while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
+        } catch (Exception e){
+            Toast.makeText(context, "DB get failed: "+ e.getMessage(), Toast.LENGTH_LONG).show();
+        }finally {
+            db.close();
+        }
+        return students;
     }
 }

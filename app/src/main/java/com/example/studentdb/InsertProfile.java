@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-public class DialogFragment extends AppCompatDialogFragment  {
+public class InsertProfile extends AppCompatDialogFragment  {
     private EditText editTextSurname;
     private EditText editTextFirstName;
     private EditText editTextID;
@@ -63,13 +63,6 @@ public class DialogFragment extends AppCompatDialogFragment  {
 
                     DBHelper dbHelper = new DBHelper(getActivity());
                     dbHelper.addStudent(new Student(surname, firstName, ID, GPA));
-
-                    //((MainActivity)getActivity()).loadTextView();
-
-                    //pass the string to the main activity
-//                    DialogListener listener = (DialogListener) getActivity();
-//                    listener.applyTexts(surname, firstName, ID, GPA);
-
                 }
             }
         });
@@ -86,7 +79,8 @@ public class DialogFragment extends AppCompatDialogFragment  {
         }
     }
 
+
     public interface DialogListener{
-        void applyTexts(String surname, String firstName, int ID, float GPA);
+        void applyTexts();
     }
 }
