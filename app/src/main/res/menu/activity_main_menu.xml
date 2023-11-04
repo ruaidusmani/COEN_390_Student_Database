@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/activity_main_menu"
-        android:title="Profile ID"
+        android:title="Toggle Profile"
         app:showAsAction="never"
         android:visible="true"/>
 </menu>

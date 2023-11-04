@@ -47,15 +47,14 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         Student student = Student_List.get(position);
         Log.d("Issue", student.getSurname());
         TextView textView = holder.student_information;
-        textView.setText(student.getSurname());
-        Log.d("Issue", "54");
 
-//        if (!toggle){ // counter_name or counter_number
-//            textView.setText(student.getSurname() + " " + student.getFirstName());
-//        }
-//        else{
-//            textView.setText(String.valueOf(student.getID()));
-//        }
+
+        if (!toggle){ // counter_name or counter_number
+            textView.setText(student.getSurname() + ", " + student.getFirstName());
+        }
+        else{
+            textView.setText(String.valueOf(student.getID()));
+        }
     }
 
     @Override
