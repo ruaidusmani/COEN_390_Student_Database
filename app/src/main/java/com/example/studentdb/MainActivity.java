@@ -1,5 +1,6 @@
 package com.example.studentdb;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -20,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements InsertProfile.DialogListener{
+public class MainActivity extends AppCompatActivity implements InsertProfile.DialogListener, StudentAdapter.OnItemClickListener {
 
     Vibrator vibrate;
 
@@ -65,14 +66,6 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         });
     }
 
-
-    public void openDialog(){
-        vibrate.vibrate(50);
-        Log.d("TAG", "FAB pressed!");
-        InsertProfile dialog = new InsertProfile();
-        dialog.show(getSupportFragmentManager(), "InsertProfile");
-    }
-
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.activity_main_menu, menu); // to show the menu items
         return true;
@@ -92,6 +85,14 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         return super.onOptionsItemSelected(item);
     }
 
+    public void openDialog(){
+        vibrate.vibrate(50);
+        Log.d("TAG", "FAB pressed!");
+        InsertProfile dialog = new InsertProfile();
+        dialog.show(getSupportFragmentManager(), "InsertProfile");
+    }
+
+
     public void loadData() {
         List<Student> students_db = dbHelper.getAllStudents();
 
@@ -110,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
 
         Log.d("Load", "Size of students = " + String.valueOf(students.size()));
     }
-
-
 
     public void sort_students(ArrayList<Student> students, boolean toggle){
         //sort arraylist based off surname alphabetically increasing order
@@ -148,10 +147,27 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         Log.d("Status", "display_items");
         Log.d("Student added", String.valueOf(students.size()));
         students_list = findViewById(R.id.students_list);
-        StudentAdapter adapter = new StudentAdapter(students, toggle);
+        StudentAdapter adapter = new StudentAdapter(students, toggle, this);
         adapter.notifyDataSetChanged(); // if toggle is set
         students_list.setAdapter(adapter);
         students_list.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public void onItemClick(int position){
+        // Get the selected student
+        Student selectedStudent = students.get(position);
+
+        // Create an intent to navigate to the ProfileActivity
+        Intent intent = new Intent(this, ProfileActivity.class);
+
+        // Pass the selected student's data to the ProfileActivity
+        intent.putExtra("Surname", selectedStudent.getSurname());
+        intent.putExtra("FirstName", selectedStudent.getFirstName());
+        intent.putExtra("student_id", selectedStudent.getID());
+        intent.putExtra("student_gpa", selectedStudent.getGPA());
+
+        // Start the ProfileActivity
+        startActivity(intent);
     }
 
 

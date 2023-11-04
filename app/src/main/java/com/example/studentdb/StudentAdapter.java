@@ -20,16 +20,29 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         public ViewHolder(View itemView) {
             super(itemView);
             student_information = (TextView) itemView.findViewById(R.id.student_info_placeholder);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (clickListener != null && position != RecyclerView.NO_POSITION)
+                        clickListener.onItemClick(getAdapterPosition());
+                }
+            });
         }
     }
 
     List<Student> Student_List = new ArrayList<Student>();
-    private final boolean toggle; // false = student name, true = student ID
+    private boolean toggle; // false = student name, true = student ID
 
-    public StudentAdapter(List<Student> studentinfo_list, boolean toggle) {
+    private OnItemClickListener clickListener;
+
+    public StudentAdapter(List<Student> studentinfo_list, boolean toggle,  OnItemClickListener clickListener) {
         Student_List.addAll(studentinfo_list); //copy items to class-specific array
         this.toggle = toggle;
+        this.clickListener = clickListener;
     }
+
 
     @NonNull
     @Override
@@ -48,15 +61,18 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         Log.d("Issue", student.getSurname());
         TextView textView = holder.student_information;
 
-
         if (!toggle){ // counter_name or counter_number
             textView.setText(student.getSurname() + ", " + student.getFirstName());
         }
         else{
             textView.setText(String.valueOf(student.getID()));
         }
+
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
     @Override
     public int getItemCount() {
         return Student_List.size();
