@@ -148,8 +148,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public List<String> getSelectedStudentAccessRecords(int student_id){
-
-
         SQLiteDatabase db = this.getReadableDatabase();
 
         Log.d("DBHELPER ACCESS RECORDS", "First Log");
@@ -176,15 +174,16 @@ public class DBHelper extends SQLiteOpenHelper {
         List <String> accessRecords = new ArrayList<>();
 
 
-        if (cursor != null && cursor.moveToFirst()) {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    @SuppressLint("Range") String timestamp = cursor.getString(cursor.getColumnIndex(Config.COLUMN_ACCESS_TIMESTAMP));
+                    @SuppressLint("Range") String access_type = cursor.getString(cursor.getColumnIndex(Config.COLUMN_ACCESS_TYPE));
 
-            // TODO: Add all access records to list, it is only adding creation
-
-            @SuppressLint("Range") String timestamp = cursor.getString(cursor.getColumnIndex(Config.COLUMN_ACCESS_TIMESTAMP));
-            @SuppressLint("Range") String access_type = cursor.getString(cursor.getColumnIndex(Config.COLUMN_ACCESS_TYPE));
-
-            accessRecords.add(timestamp + " " + access_type);
-            Log.d("DBHELPER ACCESS RECORDS", "getSelectedStudentAccessRecords: " + timestamp + " " + access_type);
+                    accessRecords.add(timestamp + " " + access_type);
+                } while (cursor.moveToNext());
+            }
+//            Log.d("DBHELPER ACCESS RECORDS", "getSelectedStudentAccessRecords: " + timestamp + " " + access_type);
             cursor.close();
         }
 
@@ -226,5 +225,20 @@ public class DBHelper extends SQLiteOpenHelper {
             db.close();
         }
         return students;
+    }
+
+    public void deleteStudent(int student_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = Config.COLUMN_PROFILE_ID + " = ?";
+        String[] whereArgs = { String.valueOf(student_id) };
+
+        // Delete the row with the specified student ID
+        int rowsDeleted = db.delete(Config.PROFILE_TABLE_NAME, whereClause, whereArgs);
+
+        db.close();
+
+        //Toast.makeText(context, "Student deleted", Toast.LENGTH_SHORT).show();
+
+
     }
 }

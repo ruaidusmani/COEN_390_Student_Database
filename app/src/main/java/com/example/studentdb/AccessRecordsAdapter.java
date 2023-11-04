@@ -1,7 +1,6 @@
 package com.example.studentdb;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 public class AccessRecordsAdapter extends RecyclerView.Adapter<AccessRecordsAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -44,6 +44,7 @@ public class AccessRecordsAdapter extends RecyclerView.Adapter<AccessRecordsAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         String access_record_string = AccessRecords.get(position);
         TextView textView = holder.access_record;
         textView.setText(access_record_string);

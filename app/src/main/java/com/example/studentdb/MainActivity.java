@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         intent.putExtra("student_id", selectedStudent.getID());
         intent.putExtra("student_gpa", selectedStudent.getGPA());
 
-        Log.d("TAG", "Student ID = " + String.valueOf(selectedStudent.getID()));
+        Log.d("TAG", "Student sent = " + selectedStudent.getSurname() + " " + selectedStudent.getFirstName() + " " + selectedStudent.getID() + " " + selectedStudent.getGPA());
 
         // Start the ProfileActivity
         startActivity(intent);
