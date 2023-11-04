@@ -25,9 +25,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:textSize="14sp"
-        android:textStyle="bold"
         android:text="User Profile"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
@@ -125,6 +125,31 @@
         android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/textViewHeader_ProfileCreated"
         app:layout_constraintTop_toBottomOf="@+id/textView_GPA" />
+
+    <TextView
+        android:id="@+id/textViewHeader_AccessHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Access History"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHeader_ProfileCreated" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/AccessHistory"
+        android:layout_width="match_parent"
+        android:layout_height="409dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHeader_AccessHistory" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

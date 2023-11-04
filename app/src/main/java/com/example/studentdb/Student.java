@@ -1,5 +1,9 @@
 package com.example.studentdb;
 
+import android.util.Log;
+
+import java.text.DecimalFormat;
+
 public class Student {
 
     private String surname;
@@ -7,17 +11,22 @@ public class Student {
     private int ID;
     private float GPA;
 
+    DecimalFormat twoDForm = new DecimalFormat("#.##");
+
+
     Student(){
         surname = "";
         firstName = "";
         ID = 0;
-        GPA = 0;
+        GPA = 0.00F;
     }
     Student(String surname, String firstName, int ID, float GPA){
         this.surname = surname;
         this.firstName = firstName;
         this.ID = ID;
         this.GPA = GPA;
+        GPA = Float.parseFloat(twoDForm.format(GPA));
+        Log.d("Student CLASS", "Student: " + surname + " " + firstName + " " + ID + " " + GPA);
     }
 
     public String getSurname() {

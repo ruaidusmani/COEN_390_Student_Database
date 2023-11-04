@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
 
     public void openDialog(){
         vibrate.vibrate(50);
-        Log.d("TAG", "FAB pressed!");
         InsertProfile dialog = new InsertProfile();
         dialog.show(getSupportFragmentManager(), "InsertProfile");
     }
@@ -95,11 +94,6 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
 
     public void loadData() {
         List<Student> students_db = dbHelper.getAllStudents();
-
-        Log.d("Load", students_db.get(0).getFirstName());
-        Log.d("Load", students_db.get(0).getSurname());
-        Log.d("Load", String.valueOf(students_db.get(0).getID()));
-        Log.d("Load", "Size of db = " + String.valueOf(students_db.size()));
 
         // remove all entries of arraylist
         students.clear();
@@ -154,8 +148,12 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
     }
 
     public void onItemClick(int position){
+        vibrate.vibrate(50);
         // Get the selected student
         Student selectedStudent = students.get(position);
+
+
+        dbHelper.insertAccessRecord(selectedStudent.getID(), "Opened");
 
         // Create an intent to navigate to the ProfileActivity
         Intent intent = new Intent(this, ProfileActivity.class);
@@ -165,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         intent.putExtra("FirstName", selectedStudent.getFirstName());
         intent.putExtra("student_id", selectedStudent.getID());
         intent.putExtra("student_gpa", selectedStudent.getGPA());
+
+        Log.d("TAG", "Student ID = " + String.valueOf(selectedStudent.getID()));
 
         // Start the ProfileActivity
         startActivity(intent);
