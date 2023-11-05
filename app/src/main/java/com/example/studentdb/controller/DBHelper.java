@@ -1,4 +1,4 @@
-package com.example.studentdb;
+package com.example.studentdb.controller;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import com.example.studentdb.model.Config;
+import com.example.studentdb.model.Student;
 
 import java.util.ArrayList;
 import java.util.List;

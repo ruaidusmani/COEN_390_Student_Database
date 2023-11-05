@@ -1,4 +1,4 @@
-package com.example.studentdb;
+package com.example.studentdb.model;
 
 import java.text.DecimalFormat;
 
@@ -17,7 +17,7 @@ public class Student {
         GPA = 0.00F;
     }
 
-    Student(String surname, String firstName, int ID, float GPA){
+    public Student(String surname, String firstName, int ID, float GPA){
         this.surname = surname;
         this.firstName = firstName;
         this.ID = ID;

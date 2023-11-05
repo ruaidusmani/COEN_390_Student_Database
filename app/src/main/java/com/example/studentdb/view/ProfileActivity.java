@@ -1,4 +1,4 @@
-package com.example.studentdb;
+package com.example.studentdb.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.studentdb.model.AccessRecordsAdapter;
+import com.example.studentdb.controller.DBHelper;
+import com.example.studentdb.R;
+import com.example.studentdb.model.Student;
 
 import java.util.ArrayList;
 import java.util.Collections;

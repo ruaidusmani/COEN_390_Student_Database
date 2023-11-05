@@ -1,4 +1,4 @@
-package com.example.studentdb;
+package com.example.studentdb.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -13,6 +13,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
+
+import com.example.studentdb.controller.DBHelper;
+import com.example.studentdb.R;
+import com.example.studentdb.model.Student;
 
 public class InsertProfile extends AppCompatDialogFragment  {
     Vibrator vibrate; // button press effect

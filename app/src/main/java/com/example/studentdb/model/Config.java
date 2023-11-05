@@ -1,6 +1,6 @@
 // Has all the names of the Database, its tables and their columns
 
-package com.example.studentdb;
+package com.example.studentdb.model;
 
 public class Config {
     public static final String DATABASE_NAME = "Student.db";
