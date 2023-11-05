@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -37,13 +36,13 @@ public class InsertProfile extends AppCompatDialogFragment  {
         editTextID = view.findViewById(R.id.editText_student_ID);
         editTextGPA = view.findViewById(R.id.editText_student_GPA);
 
+        // Database
         dbHelper = new DBHelper(getActivity());
 
         builder.setView(view);
 
-//      Save and Cancel Buttons
-        setNegativeButton(builder);
-        setPositiveButton(builder);
+        setNegativeButton(builder); // cancel button
+        setPositiveButton(builder); // save button
 
         builder.create();
         return builder.create();
@@ -60,96 +59,73 @@ public class InsertProfile extends AppCompatDialogFragment  {
     }
 
     private void setPositiveButton(AlertDialog.Builder builder){
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 vibrate.vibrate(50);
                 if (!input_validity()){
-                    Log.d("Valid", String.valueOf(input_validity()));
                     Toast.makeText(getActivity(), "Invalid input", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    //set EditText to string
-                    Log.d("Valid", String.valueOf(input_validity()));
-                    String surname = editTextSurname.getText().toString();
-                    String firstName = editTextFirstName.getText().toString();
-                    int ID = Integer.parseInt(editTextID.getText().toString());
-                    float GPA = Float.parseFloat(editTextGPA.getText().toString());
+                    saveStudent(); // write student to database
 
-                    dbHelper.addStudent(new Student(surname, firstName, ID, GPA));
+                    // reload data and display
+                    ((MainActivity) getActivity()).loadData();
+                    ((MainActivity) getActivity()).display_items();
+
                     dialog.dismiss();
-
                 }
             }
         });
     }
 
-//    private void setOnShowListenerForDialog(final AlertDialog dialog) {
-//        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-//            @Override
-//            public void onShow(DialogInterface dialogInterface) {
-//                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-//                positiveButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if (!input_validity()) {
-//                            //dialog.dismiss();
-//                        }
-//                        else {
-//                            String surname = editTextSurname.getText().toString();
-//                            String firstName = editTextFirstName.getText().toString();
-//                            int ID = Integer.parseInt(editTextID.getText().toString());
-//                            float GPA = Float.parseFloat(editTextGPA.getText().toString());
-//
-//                            dbHelper.addStudent(new Student(surname, firstName, ID, GPA));
-//                        }
-//                    }
-//                });
-//            }
-//        });
-//    }
+    public void saveStudent(){
+        String surname = editTextSurname.getText().toString();
+        String firstName = editTextFirstName.getText().toString();
+        int ID = Integer.parseInt(editTextID.getText().toString());
+        float GPA = Float.parseFloat(editTextGPA.getText().toString());
 
-    private boolean input_validity(){
+        dbHelper.addStudent(new Student(surname, firstName, ID, GPA));
+        Toast.makeText(getActivity(), "Student added", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean empty_text(EditText text){
+        if (text.getText().toString().isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean valid_numbers(EditText text){
+        boolean valid_number = true;
+        String tag = (String) text.getTag(); // tags for editTexts are in their .xml
+        switch(tag){
+            case "ID":
+                // check if ID is 8 digits long and if it already exists in database
+                if ((int) ((Math.log10((Integer.parseInt(text.getText().toString())))) + 1) != 8){
+                    valid_number = false;
+                } else if (dbHelper.checkDuplicateID((int) Integer.parseInt(text.getText().toString()))){
+                    valid_number = false;
+                }
+                break;
+            case "GPA":
+                // check if GPA is between 0.00 and 4.30
+                if (Float.parseFloat(text.getText().toString()) > 4.30F || Float.parseFloat(text.getText().toString()) < 0.00F){
+                    text.setError("Please enter a valid GPA");
+                    valid_number = false;
+                }
+                break;
+        }
+        return valid_number;
+    }
+
+    private boolean input_validity() {
         boolean validity = true;
 
-        // checking if surname is empty
-        if (editTextSurname.getText().toString().isEmpty()){
-            editTextSurname.setError("Please enter a surname");
+        // checking if any editText is empty and then check if ID and GPA input are valid
+        if (empty_text(editTextSurname) || empty_text(editTextFirstName) || empty_text(editTextID) || empty_text(editTextGPA)) {
             validity = false;
-        }
-
-        // checking if first name is empty
-        if(editTextFirstName.getText().toString().isEmpty()){
-            editTextFirstName.setError("Please enter a first name");
-            validity = false;
-        }
-
-        Log.d("ID", String.valueOf((int) ((Math.log10((Integer.parseInt(editTextID.getText().toString())))) + 1)));
-        // checking if ID is empty, the ID format is invalid or if the ID already exists
-        if (editTextID.getText().toString().isEmpty()){
-            editTextID.setError("Please enter an ID");
-            validity = false;
-        }
-
-        else if ((int) ((Math.log10((Integer.parseInt(editTextID.getText().toString())))) + 1) != 8){
-            Log.d("ID", String.valueOf((int) ((Math.log10((Integer.parseInt(editTextID.getText().toString())))) + 1)));
-            editTextID.setError("Please enter a valid ID between 11111111 - 99999999");
-            validity = false;
-        }
-        else if (dbHelper.checkDuplicateID((int) Integer.parseInt(editTextID.getText().toString()))){
-            Log.d("DUPLICATE ID", String.valueOf(dbHelper.checkDuplicateID((int) Integer.parseInt(editTextID.getText().toString()))));
-            editTextID.setError("ID already exists");
-            validity = false;
-        }
-
-        // checking if GPA is empty or the GPA format is invalid
-        if (editTextGPA.getText().toString().isEmpty()){
-            editTextGPA.setError("Please enter a GPA");
-            validity = false;
-        }
-
-        else if (Float.parseFloat(editTextGPA.getText().toString()) > 4.30F || Float.parseFloat(editTextGPA.getText().toString()) < 0.00F){
-            editTextGPA.setError("Please enter a valid GPA");
+        } else if (!valid_numbers(editTextID) || !valid_numbers(editTextGPA)) {
             validity = false;
         }
 

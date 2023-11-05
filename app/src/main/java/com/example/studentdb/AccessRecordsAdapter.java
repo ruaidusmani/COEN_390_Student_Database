@@ -10,12 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
 public class AccessRecordsAdapter extends RecyclerView.Adapter<AccessRecordsAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView access_record; // holds name or student ID
+        public TextView access_record; // holds access record
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -23,13 +22,11 @@ public class AccessRecordsAdapter extends RecyclerView.Adapter<AccessRecordsAdap
         }
     }
 
-    List<String> AccessRecords = new ArrayList<String>();
-
+    List<String> AccessRecords = new ArrayList<String>(); // holds access records of profile
 
     public AccessRecordsAdapter(List<String> AccessRecords_list) {
         AccessRecords.addAll(AccessRecords_list); //copy items to class-specific array
     }
-
 
     @NonNull
     @Override
@@ -44,11 +41,9 @@ public class AccessRecordsAdapter extends RecyclerView.Adapter<AccessRecordsAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
         String access_record_string = AccessRecords.get(position);
         TextView textView = holder.access_record;
         textView.setText(access_record_string);
-
     }
 
     @Override

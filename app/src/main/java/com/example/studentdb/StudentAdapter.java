@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -22,6 +23,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
             student_information = (TextView) itemView.findViewById(R.id.student_info_placeholder);
             line_number = (TextView) itemView.findViewById(R.id.line_number);
 
+            //initialize click listener
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -35,7 +37,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
 
     List<Student> Student_List = new ArrayList<Student>();
     private boolean toggle; // false = student name, true = student ID
-
     private OnItemClickListener clickListener;
 
     public StudentAdapter(List<Student> studentinfo_list, boolean toggle,  OnItemClickListener clickListener) {
@@ -43,7 +44,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         this.toggle = toggle;
         this.clickListener = clickListener;
     }
-
 
     @NonNull
     @Override
@@ -61,16 +61,16 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         // set line number
         int lineNumber = position + 1;
         TextView line_number = holder.line_number;
-        line_number.setText(String.valueOf(lineNumber+"."));
+        line_number.setText(lineNumber + ".");
 
         // set student information
         Student student = Student_List.get(position);
         TextView student_information = holder.student_information;
 
-        if (!toggle){ // counter_name or counter_number
+        if (!toggle){ // student surname
             student_information.setText(student.getSurname() + ", " + student.getFirstName());
         }
-        else{
+        else{ // student ID
             student_information.setText(String.valueOf(student.getID()));
         }
 

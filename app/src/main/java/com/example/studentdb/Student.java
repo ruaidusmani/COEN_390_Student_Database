@@ -1,7 +1,5 @@
 package com.example.studentdb;
 
-import android.util.Log;
-
 import java.text.DecimalFormat;
 
 public class Student {
@@ -24,7 +22,6 @@ public class Student {
         this.firstName = firstName;
         this.ID = ID;
         this.GPA = Float.parseFloat(twoDForm.format(GPA)); // to prevent extra decimal places when loaded from db
-        Log.d("Student CLASS", "Student: " + surname + " " + firstName + " " + ID + " " + GPA);
     }
 
     public String getSurname() {

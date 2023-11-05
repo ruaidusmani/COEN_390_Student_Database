@@ -3,7 +3,6 @@ package com.example.studentdb;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,19 +52,12 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         // Database
         dbHelper = new DBHelper(MainActivity.this); // database helper
 
-        // First load and display
-        loadData(); // load data from database
+        // First load and display list call
+        loadData();
         display_items();
 
-        //Floating action button
-        insert_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDialog();
-                loadData();
-                display_items();
-            }
-        });
+        //Inserting profile button
+        insert_profile.setOnClickListener(InsertProfileListener);
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -87,13 +79,20 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         return super.onOptionsItemSelected(item);
     }
 
+    View.OnClickListener InsertProfileListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            vibrate.vibrate(50);
+            openDialog();
+        }
+    };
+
     // opens InsertProfile Dialog
     public void openDialog(){
         vibrate.vibrate(50);
         InsertProfile dialog = new InsertProfile();
         dialog.show(getSupportFragmentManager(), "InsertProfile");
     }
-
 
     public void loadData() {
         List<Student> students_db = dbHelper.getAllStudents();
@@ -104,8 +103,6 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         student_count= students.size();
 
         sort_students(students, toggle); // sort the arraylist based off toggle option
-
-        Log.d("Load", "Size of students = " + String.valueOf(students.size()));
     }
 
     // sorts profile name by surname alphabetically or by increasing ID

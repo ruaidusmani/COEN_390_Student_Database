@@ -9,6 +9,7 @@
 
     <EditText
         android:id="@+id/editText_student_GPA"
+        android:tag="GPA"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginStart="30dp"
@@ -27,6 +28,7 @@
 
     <EditText
         android:id="@+id/editText_student_ID"
+        android:tag="ID"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginStart="30dp"

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -42,21 +41,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 Config.COLUMN_ACCESS_PROFILE_ID + " INTEGER, " +  // Remove PRIMARY KEY
                 Config.COLUMN_ACCESS_TYPE + " TEXT NOT NULL, " +
                 Config.COLUMN_ACCESS_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP);";
-//        " +
-//                "FOREIGN KEY (" + Config.COLUMN_PROFILE_ID + ") REFERENCES " + Config.PROFILE_TABLE_NAME + "(" + Config.COLUMN_PROFILE_ID + "));";
 
         db.execSQL(access_query);
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + Config.PROFILE_TABLE_NAME);
-//        db.execSQL("DROP TABLE IF EXISTS "+ Config.ACCESS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+ Config.ACCESS_TABLE_NAME);
         onCreate(db);
     }
 
-    void addStudent(Student Student){
+    public void addStudent(Student Student){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -67,16 +63,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long result = db.insert(Config.PROFILE_TABLE_NAME, null, cv);
 
-
-        if (result == -1){
-            Toast.makeText(context, "Failed to add Student", Toast.LENGTH_SHORT).show();
-        }
-        else{
-//            Toast.makeText(context, "Student added successfully", Toast.LENGTH_SHORT).show();
-        }
-        db.close();
-
         insertAccessRecord(Student.getID(), "Created");
+        db.close();
     }
 
     public void insertAccessRecord(int student_id, String access_type){
@@ -87,15 +75,21 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(Config.COLUMN_ACCESS_TYPE, access_type);
 
         long result = db.insert(Config.ACCESS_TABLE_NAME, null, cv);
-
-//        if (result == -1){
-//            Toast.makeText(context, "Failed to add Access Record", Toast.LENGTH_SHORT).show();
-//        }
-//        else{}
     }
 
-    Cursor readAllData(){
+    Cursor readAllProfileData(){
         String query = "SELECT * FROM " + Config.PROFILE_TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null){
+            cursor = db.rawQuery(query, null);
+        }
+        return cursor;
+    }
+
+    Cursor readAllAccessData(){
+        String query = "SELECT * FROM " + Config.ACCESS_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
@@ -130,32 +124,27 @@ public class DBHelper extends SQLiteOpenHelper {
         );
 
         Student student = null;
-
         if (cursor != null && cursor.moveToFirst()) {
             @SuppressLint("Range") String surname = cursor.getString(cursor.getColumnIndex(Config.COLUMN_SURNAME));
             @SuppressLint("Range") String firstName = cursor.getString(cursor.getColumnIndex(Config.COLUMN_FIRSTNAME));
             @SuppressLint("Range") int ID = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_PROFILE_ID));
             @SuppressLint("Range") float GPA = cursor.getFloat(cursor.getColumnIndex(Config.COLUMN_GPA));
 
-
             student = new Student(surname, firstName, ID, GPA);
             cursor.close();
         }
-
         db.close();
-
         return student;
     }
 
     public List<String> getSelectedStudentAccessRecords(int student_id){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Log.d("DBHELPER ACCESS RECORDS", "First Log");
         String[] columns = {
                 Config.COLUMN_ACCESS_ID,
                 Config.COLUMN_ACCESS_PROFILE_ID,
                 Config.COLUMN_ACCESS_TYPE,
-                Config.COLUMN_ACCESS_TIMESTAMP
+                "strftime('%Y-%m-%d @ %H:%M:%S', " + Config.COLUMN_ACCESS_TIMESTAMP + ") AS formatted_timestamp" // formats timestamp
         };
 
         String selection = Config.COLUMN_ACCESS_PROFILE_ID + " = ?";
@@ -172,31 +161,20 @@ public class DBHelper extends SQLiteOpenHelper {
         );
 
         List <String> accessRecords = new ArrayList<>();
-
-
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    @SuppressLint("Range") String timestamp = cursor.getString(cursor.getColumnIndex(Config.COLUMN_ACCESS_TIMESTAMP));
+                    @SuppressLint("Range") String formattedTimestamp = cursor.getString(cursor.getColumnIndex("formatted_timestamp"));
                     @SuppressLint("Range") String access_type = cursor.getString(cursor.getColumnIndex(Config.COLUMN_ACCESS_TYPE));
 
-                    accessRecords.add(timestamp + " " + access_type);
+                    accessRecords.add(formattedTimestamp + " " + access_type);
                 } while (cursor.moveToNext());
             }
-//            Log.d("DBHELPER ACCESS RECORDS", "getSelectedStudentAccessRecords: " + timestamp + " " + access_type);
             cursor.close();
         }
-
-        for (String record : accessRecords){
-            Log.d("DBHELPER ACCESS RECORDS", "getSelectedStudentAccessRecords: " + record);
-        }
         db.close();
-
         return accessRecords;
-
     }
-
-
 
     public List<Student> getAllStudents(){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -231,15 +209,8 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String whereClause = Config.COLUMN_PROFILE_ID + " = ?";
         String[] whereArgs = { String.valueOf(student_id) };
-
-        // Delete the row with the specified student ID
-        int rowsDeleted = db.delete(Config.PROFILE_TABLE_NAME, whereClause, whereArgs);
-
+        db.delete(Config.PROFILE_TABLE_NAME, whereClause, whereArgs); //delete entry
         db.close();
-
-        //Toast.makeText(context, "Student deleted", Toast.LENGTH_SHORT).show();
-
-
     }
 
     public boolean checkDuplicateID(int ID) {
