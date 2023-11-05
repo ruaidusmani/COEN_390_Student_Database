@@ -23,14 +23,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements InsertProfile.DialogListener, StudentAdapter.OnItemClickListener {
 
-    Vibrator vibrate;
+    Vibrator vibrate; // button press effect
 
-    TextView status;
+    TextView status; // holds profile numbers and sort type
     RecyclerView students_list;
     FloatingActionButton insert_profile;
     DBHelper dbHelper;
-    ArrayList<Student> students = new ArrayList<Student>();
-    boolean toggle = false;
+    ArrayList<Student> students = new ArrayList<Student>(); // holds student profiles to list
+    boolean toggle = false; // toggle for profile name or ID
     int student_count = 0;
 
     @Override
@@ -43,12 +43,14 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         insert_profile = (FloatingActionButton) findViewById(R.id.insert_profile_button); // insert profile button
         status = (TextView) findViewById (R.id.textView_status); // status textview
 
+        // Toolbar
         Toolbar activity_main_menu = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(activity_main_menu);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle("Main Activity");
         activity_main_menu.showOverflowMenu(); // Toolbar items
 
+        // Database
         dbHelper = new DBHelper(MainActivity.this); // database helper
 
         // First load and display
@@ -75,16 +77,17 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
 
-        if (id == R.id.activity_main_menu){ // toggle menu item
+        if (id == R.id.activity_main_menu){ // toggle between profile name or ID
+            vibrate.vibrate(50);
             toggle = !(toggle);
             loadData();
             display_items();
-            vibrate.vibrate(50);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    // opens InsertProfile Dialog
     public void openDialog(){
         vibrate.vibrate(50);
         InsertProfile dialog = new InsertProfile();
@@ -95,51 +98,39 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
     public void loadData() {
         List<Student> students_db = dbHelper.getAllStudents();
 
-        // remove all entries of arraylist
+        // remove all entries of list array and re-add to update the list
         students.clear();
-        students.addAll(students_db); //copy items to class-specific array
+        students.addAll(students_db); //copy items to Activity-specific array
         student_count= students.size();
 
-        sort_students(students, toggle);
-        //TODO: sort the arraylist function
+        sort_students(students, toggle); // sort the arraylist based off toggle option
 
         Log.d("Load", "Size of students = " + String.valueOf(students.size()));
     }
 
+    // sorts profile name by surname alphabetically or by increasing ID
     public void sort_students(ArrayList<Student> students, boolean toggle){
-        //sort arraylist based off surname alphabetically increasing order
-
         if (!toggle){
             Comparator<Student> SurnameComparator = Comparator.comparing(Student::getSurname);
-
-            // Sort the ArrayList using the custom comparator
             Collections.sort(students,SurnameComparator);
         }
         else{
             Comparator<Student> IDComparator = Comparator.comparing(Student::getID);
-
-            // Sort the ArrayList using the custom comparator
             Collections.sort(students,IDComparator);
-        }
-
-        // Print the sorted list
-        for (Student student : students) {
-            System.out.println(student);
         }
     }
 
+    // displays the list of profiles
     public void display_items(){
-        String display_status = String.valueOf(student_count) + " profiles,";
-        if (!toggle){
-            display_status += " by Surname.";
-        }
-        else{
-            display_status += " by ID.";
-        }
+        // Generating status text based off toggle
+        String display_status = student_count + " profiles,";
+
+        if (!toggle) { display_status += " by Surname."; }
+        else { display_status += " by ID."; }
 
         status.setText(display_status);
-        Log.d("Status", "display_items");
-        Log.d("Student added", String.valueOf(students.size()));
+
+        // populate the list
         students_list = findViewById(R.id.students_list);
         StudentAdapter adapter = new StudentAdapter(students, toggle, this);
         adapter.notifyDataSetChanged(); // if toggle is set
@@ -147,32 +138,26 @@ public class MainActivity extends AppCompatActivity implements InsertProfile.Dia
         students_list.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    // Navigate to ProfileActivity if a profile is clicked from the list
     public void onItemClick(int position){
         vibrate.vibrate(50);
+
         // Get the selected student
         Student selectedStudent = students.get(position);
-
-
         dbHelper.insertAccessRecord(selectedStudent.getID(), "Opened");
 
-        // Create an intent to navigate to the ProfileActivity
+        // Start activity with student data in Intent
         Intent intent = new Intent(this, ProfileActivity.class);
 
-        // Pass the selected student's data to the ProfileActivity
         intent.putExtra("Surname", selectedStudent.getSurname());
         intent.putExtra("FirstName", selectedStudent.getFirstName());
         intent.putExtra("student_id", selectedStudent.getID());
         intent.putExtra("student_gpa", selectedStudent.getGPA());
 
-        Log.d("TAG", "Student sent = " + selectedStudent.getSurname() + " " + selectedStudent.getFirstName() + " " + selectedStudent.getID() + " " + selectedStudent.getGPA());
-
-        // Start the ProfileActivity
         startActivity(intent);
     }
 
-
+    // empty function to be able to use DialogFragment interface
     @Override
-    public void applyTexts() {
-
-    }
+    public void applyTexts() {}
 }

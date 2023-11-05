@@ -1,7 +1,6 @@
 package com.example.studentdb;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +15,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView student_information; // holds name or student ID
+        public TextView line_number; // holds line number
 
         public ViewHolder(View itemView) {
             super(itemView);
             student_information = (TextView) itemView.findViewById(R.id.student_info_placeholder);
+            line_number = (TextView) itemView.findViewById(R.id.line_number);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -57,15 +58,20 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        // set line number
+        int lineNumber = position + 1;
+        TextView line_number = holder.line_number;
+        line_number.setText(String.valueOf(lineNumber+"."));
+
+        // set student information
         Student student = Student_List.get(position);
-        Log.d("Issue", student.getSurname());
-        TextView textView = holder.student_information;
+        TextView student_information = holder.student_information;
 
         if (!toggle){ // counter_name or counter_number
-            textView.setText(student.getSurname() + ", " + student.getFirstName());
+            student_information.setText(student.getSurname() + ", " + student.getFirstName());
         }
         else{
-            textView.setText(String.valueOf(student.getID()));
+            student_information.setText(String.valueOf(student.getID()));
         }
 
     }

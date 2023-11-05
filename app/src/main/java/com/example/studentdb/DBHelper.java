@@ -241,4 +241,33 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     }
+
+    public boolean checkDuplicateID(int ID) {
+        boolean duplicateID = false;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String[] columns = {
+                Config.COLUMN_PROFILE_ID
+        };
+
+        String selection = Config.COLUMN_PROFILE_ID + " = ?";
+        String[] selectionArgs = { String.valueOf(ID) };
+
+        Cursor cursor = db.query(
+                Config.PROFILE_TABLE_NAME,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        if (cursor.getCount() > 0){
+            duplicateID = true;
+        }
+
+        return duplicateID;
+    }
 }

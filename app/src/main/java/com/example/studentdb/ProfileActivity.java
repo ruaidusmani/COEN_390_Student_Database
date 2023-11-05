@@ -20,16 +20,16 @@ import java.util.List;
 public class ProfileActivity extends AppCompatActivity {
 
     Vibrator vibrate;
-    TextView textViewHeader_Surname, textViewHeader_firstName, textViewHeader_ID, textViewHeader_GPA, textViewHeader_ProfileCreated;
-    TextView textView_Surname, textView_firstName, textView_ID, textView_GPA, textView_ProfileCreated;
+    TextView textViewHeader_Surname, textViewHeader_firstName, textViewHeader_ID, textViewHeader_GPA,
+            textViewHeader_ProfileCreated,
+            textView_Surname, textView_firstName, textView_ID, textView_GPA, textView_ProfileCreated;
     DBHelper dbHelper;
 
-    RecyclerView AccessHistory;
+    RecyclerView AccessHistory; // list for showing access records of profile
 
-    ArrayList<String> access_records = new ArrayList<String>();
+    ArrayList<String> access_records = new ArrayList<String>(); // holds access records of profile
 
-    Student selected_student;
-
+    Student selected_student; // holds selected student profile
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         vibrate = (Vibrator) getSystemService(VIBRATOR_SERVICE); // vibrate service
 
+        // Toolbar
         Toolbar profile_toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(profile_toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -45,7 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         //Toolbar items
         profile_toolbar.showOverflowMenu();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // up navigation
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //Initialize TextViews
@@ -61,7 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
         textView_GPA = (TextView) findViewById(R.id.textView_GPA);
         textView_ProfileCreated = (TextView) findViewById(R.id.textView_ProfileCreated);
 
-
+        // initialize selected student with the information from the Intent's extras
         selected_student= new Student(
                 getIntent().getStringExtra("Surname"),
                 getIntent().getStringExtra("FirstName"),
@@ -76,14 +77,10 @@ public class ProfileActivity extends AppCompatActivity {
         loadAccessRecords(selected_student.getID());
 
         Log.d("Profile Created Access Record", access_records.get(access_records.size()-1));
-
         Log.d("Selected Student", selected_student.getSurname() + " " + selected_student.getFirstName() + " " + selected_student.getID() + " " + selected_student.getGPA());
 
         set_StudentInfo(selected_student, access_records.get(access_records.size()-1));
-
-
         display_records();
-
 
     }
 
@@ -97,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
 
-        if (id == R.id.profile_main_menu){
+        if (id == R.id.profile_main_menu){ // deleting student profile from Profile Table
             vibrate.vibrate(50);
             dbHelper.insertAccessRecord(selected_student.getID(), "Deleted");
             loadAccessRecords(selected_student.getID());
@@ -110,27 +107,22 @@ public class ProfileActivity extends AppCompatActivity {
 
         else if (id == android.R.id.home){
             vibrate.vibrate(50);
-            // make dbHelper for close
             dbHelper.insertAccessRecord(selected_student.getID(), "Closed");
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
-
 
     public void set_StudentInfo(Student student, String profile_creation_string){
         textView_Surname.setText(student.getSurname());
         textView_firstName.setText(student.getFirstName());
         textView_ID.setText(Integer.toString(student.getID()));
-
         textView_GPA.setText(Float.toString(student.getGPA()));
-
         textView_ProfileCreated.setText(profile_creation_string);
-
     }
-
 
     public void loadAccessRecords(int student_id) {
         List<String> access_records_db = dbHelper.getSelectedStudentAccessRecords(student_id);
@@ -146,11 +138,10 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
     public void display_records(){
         AccessHistory = findViewById(R.id.AccessHistory);
         AccessRecordsAdapter adapter = new AccessRecordsAdapter(access_records);
-        adapter.notifyDataSetChanged(); // if toggle is set
+        adapter.notifyDataSetChanged(); // refreshes the list if a record is added to Access Tables
         AccessHistory.setAdapter(adapter);
         AccessHistory.setLayoutManager(new LinearLayoutManager(this));
     }

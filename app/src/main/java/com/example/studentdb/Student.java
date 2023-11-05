@@ -6,13 +6,11 @@ import java.text.DecimalFormat;
 
 public class Student {
 
-    private String surname;
-    private String firstName;
+    private String surname, firstName;
     private int ID;
     private float GPA;
 
-    DecimalFormat twoDForm = new DecimalFormat("#.##");
-
+    DecimalFormat twoDForm = new DecimalFormat("#.##"); // float number formatter
 
     Student(){
         surname = "";
@@ -20,12 +18,12 @@ public class Student {
         ID = 0;
         GPA = 0.00F;
     }
+
     Student(String surname, String firstName, int ID, float GPA){
         this.surname = surname;
         this.firstName = firstName;
         this.ID = ID;
-        this.GPA = GPA;
-        GPA = Float.parseFloat(twoDForm.format(GPA));
+        this.GPA = Float.parseFloat(twoDForm.format(GPA)); // to prevent extra decimal places when loaded from db
         Log.d("Student CLASS", "Student: " + surname + " " + firstName + " " + ID + " " + GPA);
     }
 
